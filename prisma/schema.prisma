@@ -1,0 +1,41 @@
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  @@map(name: "user")
+  userId Int @default(autoincrement()) @id
+  firstName String @db.VarChar(255)
+  lastName String @db.VarChar(255)
+  email String @db.VarChar(255) @unique
+  password String @db.VarChar(255)
+  flashCard FlashCard[]
+}
+
+model LoggedInUser {
+  @@map(name: "loggedInUser")
+  sessionId Int @default(autoincrement()) @id
+  userId Int
+  firstName String @db.VarChar(255)
+  lastName String @db.VarChar(255)
+  email String @db.VarChar(255)
+  accessToken String @db.VarChar(500)
+}
+
+model FlashCard {
+  @@map(name: "flashCard")
+  flashCardId Int @default(autoincrement()) @id
+  question String @db.VarChar(255)
+  answer String @db.VarChar(255)
+  user User @relation(fields: [userId], references: [userId])
+  userId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
