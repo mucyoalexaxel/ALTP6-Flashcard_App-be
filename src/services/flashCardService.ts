@@ -1,4 +1,5 @@
 import { FlashCard } from "@prisma/client";
+import { AuthenticationError } from "apollo-server";
 import prismaContext from "../lib/prisma/prismaContext";
 
 export const getAllFlashCards = async (): Promise<FlashCard[]> => {
@@ -29,3 +30,51 @@ export const createFlashCard = async (
     .then((newFlashCard) => newFlashCard)
     .catch((error) => error);
 };
+
+export const updateFlashCard = async (
+  flashCardId: number,
+  question: string,
+  answer: string
+): Promise<FlashCard> =>
+  await prismaContext.prisma.flashCard
+    .update({
+      where: {
+        flashCardId,
+      },
+      data: {
+        question,
+        answer,
+      },
+    })
+    .then((updatedFlashCard) => updatedFlashCard)
+    .catch((error) => error);
+
+export const deleteFlashCard = async (
+  flashCardId: number,
+  userId: number
+): Promise<void> =>
+  await prismaContext.prisma.flashCard
+    .deleteMany({
+      where: {
+        flashCardId,
+        userId,
+      },
+    })
+    .then((deletedFlashCard) => deletedFlashCard)
+    .catch((error) => error);
+
+export const isValidCard = async (flashCardId: number): Promise<any> =>
+  await prismaContext.prisma.flashCard.findUnique({
+    where: {
+      flashCardId,
+    },
+  });
+
+export const isFlashCardAuthor = async (
+  userId: number
+): Promise<FlashCard | null> =>
+  await prismaContext.prisma.flashCard.findFirst({
+    where: {
+      userId,
+    },
+  });

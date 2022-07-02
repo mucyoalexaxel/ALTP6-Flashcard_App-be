@@ -71,4 +71,47 @@ export const flashCardByIdInput: GraphQLInputObjectType =
     },
   });
 
+export const UpdateFlashCardInput: GraphQLInputObjectType =
+  new GraphQLInputObjectType({
+    name: "UpdateFlashCardInput",
+    description: "Create flashcard input",
+    fields: {
+      flashCardId: {
+        type: new GraphQLNonNull(GraphQLInt),
+        description: `The flashcard's id`,
+      },
+      question: {
+        type: new GraphQLNonNull(GraphQLString),
+        description: `The flashcard's question`,
+      },
+      answer: {
+        type: new GraphQLNonNull(GraphQLString),
+        description: `The flashcard's answer`,
+      },
+    },
+  });
+
+export const DeleteFlashCardInput: GraphQLInputObjectType =
+  new GraphQLInputObjectType({
+    name: "DeleteFlashCardInput",
+    description: "Delete flashcard input",
+    fields: {
+      flashCardId: {
+        type: new GraphQLNonNull(GraphQLInt),
+        description: `The flashcard's id`,
+      },
+    },
+  });
+
+export const DeletedFlashCardType: GraphQLObjectType = new GraphQLObjectType({
+  name: "DeletedFlashCardType",
+  description: "outputs a null for a deleted flashcard",
+  fields: {
+    flashCardId: {
+      type: GraphQLID,
+      description: `The flashcard's Id.`,
+    },
+  },
+});
+
 export default FlashCardType;

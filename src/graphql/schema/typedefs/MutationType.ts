@@ -1,6 +1,12 @@
 import { GraphQLObjectType } from "graphql";
-import createFlashCardMutation from "../../../graphql/schema/resolvers/mutation/FlashCardMutation";
-import RegisterUserMutation, { UserLoginMutation, UserLogoutMutation } from "../../../graphql/schema/resolvers/mutation/UserMutation";
+import createFlashCardMutation, {
+  updateFlashCardMutation,
+  deleteFlashCardMutation,
+} from "../../../graphql/schema/resolvers/mutation/FlashCardMutation";
+import RegisterUserMutation, {
+  UserLoginMutation,
+  UserLogoutMutation,
+} from "../../../graphql/schema/resolvers/mutation/UserMutation";
 
 const mutationType: GraphQLObjectType = new GraphQLObjectType({
   name: "Mutation",
@@ -9,6 +15,8 @@ const mutationType: GraphQLObjectType = new GraphQLObjectType({
     loginUser: UserLoginMutation,
     logoutUser: UserLogoutMutation,
     createFlashCard: createFlashCardMutation,
+    updateFlashCard: updateFlashCardMutation,
+    deleteFlashCard: deleteFlashCardMutation,
   },
 });
 
