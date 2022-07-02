@@ -1,15 +1,24 @@
 import { GraphQLFieldConfig, GraphQLFieldResolver } from "graphql";
-import { AuthenticationError } from "apollo-server-core";
+import {
+  AuthenticationError,
+  ApolloError,
+  UserInputError,
+} from "apollo-server-core";
 import { FlashCard } from "@prisma/client";
 import { IApolloServerContext } from "../../../../lib/interfaces/IApolloServerContext";
 import {
   createFlashCard,
   updateFlashCard,
+  deleteFlashCard,
+  isValidCard,
+  isFlashCardAuthor,
 } from "../../../../services/flashCardService";
 import FlashCardType from "../../../../graphql/schema/typedefs/FlashCardType";
 import {
   CreateFlashCardInput,
   UpdateFlashCardInput,
+  DeleteFlashCardInput,
+  DeletedFlashCardType,
 } from "../../../../graphql/schema/typedefs/FlashCardType";
 
 export const createFlashCardMutationResolver: GraphQLFieldResolver<
@@ -49,14 +58,12 @@ export const updateFlashCardMutationResolver: GraphQLFieldResolver<
 ): Promise<FlashCard | null> => {
   const { userContext } = context;
   if (!userContext) throw new AuthenticationError("User Is Not Authenticated");
-  const isUpdated = await updateFlashCard(
-    flashCardId,
-    question,
-    answer,
-    userContext.userId
-  );
-  if (!isUpdated) throw new AuthenticationError("Not Allowed To Modify This FlashCard");
-  return isUpdated;
+  const checkCard = await isValidCard(flashCardId);
+  if (!checkCard) throw new ApolloError("Flash Card Not Found");
+  const isAuthor = await isFlashCardAuthor(userContext.userId);
+  if (!isAuthor)
+    throw new AuthenticationError("Not Allowed To Modify This FlashCard");
+  else return await updateFlashCard(flashCardId, question, answer);
 };
 
 export const updateFlashCardMutation: GraphQLFieldConfig<
@@ -71,6 +78,34 @@ export const updateFlashCardMutation: GraphQLFieldConfig<
     },
   },
   resolve: updateFlashCardMutationResolver,
+};
+
+export const deleteFlashCardMutationResolver: GraphQLFieldResolver<
+  unknown,
+  IApolloServerContext
+> = async (source, { input: { flashCardId } }, context): Promise<any> => {
+  const { userContext } = context;
+  if (!userContext) throw new AuthenticationError("User Is Not Authenticated");
+  const checkCard = await isValidCard(flashCardId);
+  if (!checkCard) throw new ApolloError("Flash Card Not Found");
+  const isAuthor = await isFlashCardAuthor(userContext.userId);
+  if (!isAuthor)
+    throw new AuthenticationError("Not Allowed To Delete This FlashCard");
+  return await deleteFlashCard(flashCardId, userContext.userId);
+};
+
+export const deleteFlashCardMutation: GraphQLFieldConfig<
+  unknown,
+  IApolloServerContext
+> = {
+  description: "Delete flashcard",
+  type: DeletedFlashCardType,
+  args: {
+    input: {
+      type: DeleteFlashCardInput,
+    },
+  },
+  resolve: deleteFlashCardMutationResolver,
 };
 
 export default createFlashCardMutation;

@@ -1,6 +1,7 @@
 import { GraphQLObjectType } from "graphql";
 import createFlashCardMutation, {
   updateFlashCardMutation,
+  deleteFlashCardMutation,
 } from "../../../graphql/schema/resolvers/mutation/FlashCardMutation";
 import RegisterUserMutation, {
   UserLoginMutation,
@@ -15,6 +16,7 @@ const mutationType: GraphQLObjectType = new GraphQLObjectType({
     logoutUser: UserLogoutMutation,
     createFlashCard: createFlashCardMutation,
     updateFlashCard: updateFlashCardMutation,
+    deleteFlashCard: deleteFlashCardMutation,
   },
 });
 
