@@ -71,4 +71,24 @@ export const flashCardByIdInput: GraphQLInputObjectType =
     },
   });
 
+export const UpdateFlashCardInput: GraphQLInputObjectType =
+  new GraphQLInputObjectType({
+    name: "UpdateFlashCardInput",
+    description: "Create flashcard input",
+    fields: {
+      flashCardId: {
+        type: new GraphQLNonNull(GraphQLInt),
+        description: `The flashcard's id`,
+      },
+      question: {
+        type: new GraphQLNonNull(GraphQLString),
+        description: `The flashcard's question`,
+      },
+      answer: {
+        type: new GraphQLNonNull(GraphQLString),
+        description: `The flashcard's answer`,
+      },
+    },
+  });
+
 export default FlashCardType;

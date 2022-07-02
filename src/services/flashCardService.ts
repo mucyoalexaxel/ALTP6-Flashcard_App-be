@@ -29,3 +29,29 @@ export const createFlashCard = async (
     .then((newFlashCard) => newFlashCard)
     .catch((error) => error);
 };
+
+export const updateFlashCard = async (
+  flashCardId: number,
+  question: string,
+  answer: string,
+  userId: number
+): Promise<FlashCard | null> => {
+  const isAuthor = await prismaContext.prisma.flashCard.findFirst({
+    where: {
+      userId,
+    },
+  });
+  if (!isAuthor) return null;
+  else return await prismaContext.prisma.flashCard
+    .update({
+      where: {
+        flashCardId,
+      },
+      data: {
+        question,
+        answer,
+      },
+    })
+    .then((updatedFlashCard) => updatedFlashCard)
+    .catch((error) => error);
+};
