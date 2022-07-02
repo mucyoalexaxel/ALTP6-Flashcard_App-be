@@ -1,5 +1,13 @@
-import { RegisterUserMutationResolver, UserLoginMutationResolver, UserLogoutMutationResolver } from '../../../../graphql/schema/resolvers/mutation/UserMutation';
-import { createFlashCardMutationResolver, updateFlashCardMutationResolver } from '../../../../graphql/schema/resolvers/mutation/FlashCardMutation';
+import {
+  RegisterUserMutationResolver,
+  UserLoginMutationResolver,
+  UserLogoutMutationResolver,
+} from "../../../../graphql/schema/resolvers/mutation/UserMutation";
+import {
+  createFlashCardMutationResolver,
+  updateFlashCardMutationResolver,
+  deleteFlashCardMutationResolver,
+} from "../../../../graphql/schema/resolvers/mutation/FlashCardMutation";
 
 const mutation = {
   registerUser: {
@@ -16,6 +24,9 @@ const mutation = {
   },
   updateFlashCard: {
     resolve: updateFlashCardMutationResolver,
+  },
+  deleteFlashCard: {
+    resolve: deleteFlashCardMutationResolver,
   },
 };
 
